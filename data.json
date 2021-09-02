@@ -1,0 +1,25 @@
+{
+  "cards": [
+    {
+      "word": "good",
+      "partOfSpeech": "adj",
+      "translation": "好的",
+      "example": "You are so good.",
+      "id": 1
+    },
+    {
+      "word": "cat",
+      "partOfSpeech": "n",
+      "translation": "貓",
+      "example": "The cat is cute.",
+      "id": 2
+    },
+    {
+      "word": "all at sea",
+      "partOfSpeech": "ph.",
+      "translation": "不知所措",
+      "example": "She's all at sea with the instruction of the new washing machine.",
+      "id": 4
+    }
+  ]
+}

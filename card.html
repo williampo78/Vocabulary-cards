@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/card.css" />
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="input">
+        單字: <input type="text" v-model.trim="input.word" /> 詞性:
+        <input type="text" v-model.trim="input.partOfSpeech" /> 中文:
+        <input type="text" v-model.trim="input.translation" /> 例句:
+        <input
+          type="text"
+          v-model.trim="input.example"
+          @keyup.enter="addWord"
+        />
+
+        <button
+          v-if="input.example && input.example && input.translation && input.partOfSpeech"
+          @click="addWord"
+        >
+          加入
+        </button>
+      </div>
+      <ol>
+        <li class="cards" v-for="(card,index) in cards">
+          {{card.word}} ({{card.partOfSpeech}}) {{card.translation}}
+          <br />
+          e.g. {{card.example}}
+          <button @click="startEdit(index)">修改</button>
+          <button @click="deleteHandler(index)">刪除</button>
+          <div v-if="editedCard === index">
+            單字: <input type="text" v-model.trim="editInput.word" /> 詞性:
+            <input type="text" v-model.trim="editInput.partOfSpeech" /> 中文:
+            <input type="text" v-model.trim="editInput.translation" /> 例句:
+            <input
+              type="text"
+              v-model.trim="editInput.example"
+              @keyup.enter="updateHandler(index)"
+            />
+            <button @click="updateHandler(index)">更新</button>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.9/vue.js"
+      integrity="sha512-o9SZrtqlGkpa7EF+dDrNjEdRFFYhymlrBzDKpolHNolxsyx0IcXAbEm9i1e8QpoiMgEdKZVtY8XiK1t8i6jVDA=="
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js"
+      integrity="sha512-nqIFZC8560+CqHgXKez61MI0f9XSTKLkm0zFVm/99Wt0jSTZ7yeeYwbzyl0SGn/s8Mulbdw+ScCG41hmO2+FKw=="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      let data = {
+        input: {
+          word: "",
+          partOfSpeech: "",
+          translation: "",
+          example: "",
+        },
+        editInput: {
+          word: "",
+          partOfSpeech: "",
+          translation: "",
+          example: "",
+        },
+        // editInput: {
+        //   word: ""
+        //   partOfSpeech: this.input.partOfSpeech,
+        //   translation: this.input.translation,
+        //   example: this.input.example,
+        // },
+        // isHidden: true,
+        cards: [],
+        editedCard: null,
+      };
+
+      let vm = new Vue({
+        el: "#app",
+        data: data,
+        mounted() {
+          axios.get("http://localhost:3000/cards").then((res) => {
+            this.cards = res.data;
+            // console.log(this.cards);
+          });
+        },
+        methods: {
+          //   addWord() {
+          //     this.cards.push({
+          //       word: this.input.word,
+          //       partOfSpeech: this.input.partOfSpeech,
+          //       translation: this.input.translation,
+          //       example: this.input.example,
+          //     });
+          //     this.input.word = "";
+          //     this.input.partOfSpeech = "";
+          //     this.input.translation = "";
+          //     this.input.example = "";
+          //     console.log(this.cards);
+          //   },
+          addWord() {
+            let input = this.input;
+            if (!input) {
+              return false;
+            }
+            axios
+              .post("http://localhost:3000/cards", {
+                word: input.word,
+                partOfSpeech: input.partOfSpeech,
+                translation: input.translation,
+                example: input.example,
+              })
+              .then((res) => {
+                input.word = "";
+                input.partOfSpeech = "";
+                input.translation = "";
+                input.example = "";
+                this.cards.push(res.data);
+                console.log(res);
+              });
+          },
+          deleteHandler(index) {
+            let target = this.cards[index];
+            axios
+              .delete(`http://localhost:3000/cards/${target.id}`)
+              .then((res) => {
+                this.cards.splice(index, 1);
+                console.log(res);
+              });
+          },
+          updateHandler(index) {
+            let target = this.cards[index];
+            axios
+              .patch(`http://localhost:3000/cards/${target.id}`, {
+                word: this.editInput.word,
+                partOfSpeech: this.editInput.partOfSpeech,
+                translation: this.editInput.translation,
+                example: this.editInput.example,
+              })
+              .then((res) => {
+                this.editInput.word = "";
+                this.editInput.partOfSpeech = "";
+                this.editInput.translation = "";
+                this.editInput.example = "";
+                this.cards.splice(index, 1, res.data);
+                this.editedCard = null;
+              });
+          },
+          startEdit(index) {
+            this.editInput.word = this.cards[index].word;
+            this.editInput.partOfSpeech = this.cards[index].partOfSpeech;
+            this.editInput.translation = this.cards[index].translation;
+            this.editInput.example = this.cards[index].example;
+            this.editedCard = index;
+            console.log(this.editedCard, index);
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
