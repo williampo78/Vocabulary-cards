@@ -5,13 +5,6 @@
       "partOfSpeech": "adj",
       "translation": "好的",
       "example": "You are so good.",
-      "id": 1
-    },
-    {
-      "word": "cat",
-      "partOfSpeech": "n",
-      "translation": "貓",
-      "example": "The cat is cute.",
       "id": 2
     },
     {
@@ -20,6 +13,27 @@
       "translation": "不知所措",
       "example": "She's all at sea with the instruction of the new washing machine.",
       "id": 4
+    },
+    {
+      "word": "dog",
+      "partOfSpeech": "n",
+      "translation": "狗",
+      "example": "The dog is cute.",
+      "id": 5
+    },
+    {
+      "word": "asd",
+      "partOfSpeech": "fasd",
+      "translation": "sadsad",
+      "example": "asdsafasf",
+      "id": 6
+    },
+    {
+      "word": "aaa",
+      "partOfSpeech": "ccc",
+      "translation": "dss",
+      "example": "eqasd",
+      "id": 7
     }
   ]
 }

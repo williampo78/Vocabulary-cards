@@ -34,7 +34,7 @@
           e.g. {{card.example}}
           <button @click="startEdit(index)">修改</button>
           <button @click="deleteHandler(index)">刪除</button>
-          <div v-if="editedCard === index">
+          <div v-if="editedCard === index && updateCancelHandler">
             單字: <input type="text" v-model.trim="editInput.word" /> 詞性:
             <input type="text" v-model.trim="editInput.partOfSpeech" /> 中文:
             <input type="text" v-model.trim="editInput.translation" /> 例句:
@@ -44,9 +44,20 @@
               @keyup.enter="updateHandler(index)"
             />
             <button @click="updateHandler(index)">更新</button>
+            <button @click="updateCancelHandler(index)">取消更新</button>
           </div>
         </li>
       </ol>
+
+      <div class="learnCards">
+        <ol>
+          <li class="cards" v-for="(card,index) in cards">
+            {{card.word}} ({{card.partOfSpeech}}) {{card.translation}}
+            <br />
+            e.g. {{card.example}}
+          </li>
+        </ol>
+      </div>
     </div>
 
     <script
@@ -155,6 +166,9 @@
                 this.cards.splice(index, 1, res.data);
                 this.editedCard = null;
               });
+          },
+          updateCancelHandler(index) {
+            this.editedCard = null;
           },
           startEdit(index) {
             this.editInput.word = this.cards[index].word;
